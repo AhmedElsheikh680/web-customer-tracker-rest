@@ -1,5 +1,6 @@
 package com.custoomer.tracker.rest.controller;
 
+import com.custoomer.tracker.rest.exception.CustomerNotFoundException;
 import com.custoomer.tracker.rest.model.Customer;
 import com.custoomer.tracker.rest.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +31,25 @@ public class CustomerRestController {
        }
     }
 
-    @GetMapping("/customers/{id}")
-    public ResponseEntity<Customer> findById(@PathVariable int id){
-        Customer customer = customerService.findById(id);
-        if( customer !=null){
-            return new ResponseEntity<Customer>(customer, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<Customer>(customer, HttpStatus.NOT_FOUND);
-        }
+//    @GetMapping("/customers/{id}")
+//    public ResponseEntity<Customer> findById(@PathVariable int id){
+//        Customer customer = customerService.findById(id);
+//        if( customer !=null){
+//            return new ResponseEntity<Customer>(customer, HttpStatus.OK);
+//        }else{
+//            return new ResponseEntity<Customer>(customer, HttpStatus.NOT_FOUND);
+//        }
+//
+//
+//    }
 
+    @GetMapping("/customers/{id}")
+    public Customer  findById(@PathVariable int id){
+        Customer customer = customerService.findById(id);
+        if(customer == null){
+            throw new CustomerNotFoundException("Customer Id Not Found  - "+id);
+        }
+        return customer;
 
     }
 }
