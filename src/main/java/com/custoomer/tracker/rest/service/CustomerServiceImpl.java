@@ -1,11 +1,15 @@
 package com.custoomer.tracker.rest.service;
 
 import com.custoomer.tracker.rest.dao.CustomerDao;
+import com.custoomer.tracker.rest.exception.RecordNotFoundException;
 import com.custoomer.tracker.rest.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.stylesheets.LinkStyle;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -15,15 +19,21 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerDao customerDao;
 
     @Override
-    public Set<Customer> findAll() {
-        Set<Customer> customers = new HashSet<>();
+    public List<Customer> findAll() {
+        List<Customer> customers = new ArrayList<>();
         customerDao.findAll().forEach(customers::add);
         return customers;
     }
 
     @Override
     public Customer findById(Integer id) {
-        return customerDao.findById(id).orElse(null);
+        try{
+            return customerDao.findById(id).get();
+        }catch (Exception e){
+            throw new RecordNotFoundException(String.format("No Redord With Id[%s] Was Found In Our Daatabase ",id));
+
+        }
+
     }
 
     @Override
